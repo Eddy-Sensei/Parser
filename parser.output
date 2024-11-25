@@ -1,0 +1,708 @@
+Grammar
+
+    0 $accept: program $end
+
+    1 program: statement ';'
+
+    2 statement: expression ';'
+    3          | assignment
+    4          | conditional
+
+    5 assignment: IDENTIFIER '=' expression
+    6           | array_access '=' expression
+
+    7 array_access: IDENTIFIER '[' expression ']'
+
+    8 conditional: IF '(' comparison_expr ')' statement
+    9            | IF '(' comparison_expr ')' statement ELSE statement
+
+   10 comparison_expr: expression '>' expression
+   11                | expression '<' expression
+   12                | expression GE expression
+   13                | expression LE expression
+   14                | expression EQ expression
+   15                | expression NE expression
+
+   16 expression: expression '+' term
+   17           | expression '-' term
+   18           | term
+
+   19 term: term '*' factor
+   20     | term '/' factor
+   21     | factor
+
+   22 factor: NUMBER
+   23       | IDENTIFIER
+   24       | array_access
+   25       | '(' expression ')'
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    '(' (40) 8 9 25
+    ')' (41) 8 9 25
+    '*' (42) 19
+    '+' (43) 16
+    '-' (45) 17
+    '/' (47) 20
+    ';' (59) 1 2
+    '<' (60) 11
+    '=' (61) 5 6
+    '>' (62) 10
+    '[' (91) 7
+    ']' (93) 7
+    error (256)
+    NUMBER <num> (258) 22
+    IDENTIFIER <id> (259) 5 7 23
+    IF (260) 8 9
+    ELSE (261) 9
+    GE (262) 12
+    LE (263) 13
+    EQ (264) 14
+    NE (265) 15
+    IFX (266)
+
+
+Nonterminals, with rules where they appear
+
+    $accept (24)
+        on left: 0
+    program <ast> (25)
+        on left: 1
+        on right: 0
+    statement <ast> (26)
+        on left: 2 3 4
+        on right: 1 8 9
+    assignment <ast> (27)
+        on left: 5 6
+        on right: 3
+    array_access <ast> (28)
+        on left: 7
+        on right: 6 24
+    conditional <ast> (29)
+        on left: 8 9
+        on right: 4
+    comparison_expr <ast> (30)
+        on left: 10 11 12 13 14 15
+        on right: 8 9
+    expression <ast> (31)
+        on left: 16 17 18
+        on right: 2 5 6 7 10 11 12 13 14 15 16 17 25
+    term <ast> (32)
+        on left: 19 20 21
+        on right: 16 17 18 19 20
+    factor <ast> (33)
+        on left: 22 23 24 25
+        on right: 19 20 21
+
+
+State 0
+
+    0 $accept: • program $end
+
+    NUMBER      shift, and go to state 1
+    IDENTIFIER  shift, and go to state 2
+    IF          shift, and go to state 3
+    '('         shift, and go to state 4
+
+    program       go to state 5
+    statement     go to state 6
+    assignment    go to state 7
+    array_access  go to state 8
+    conditional   go to state 9
+    expression    go to state 10
+    term          go to state 11
+    factor        go to state 12
+
+
+State 1
+
+   22 factor: NUMBER •
+
+    $default  reduce using rule 22 (factor)
+
+
+State 2
+
+    5 assignment: IDENTIFIER • '=' expression
+    7 array_access: IDENTIFIER • '[' expression ']'
+   23 factor: IDENTIFIER •
+
+    '='  shift, and go to state 13
+    '['  shift, and go to state 14
+
+    $default  reduce using rule 23 (factor)
+
+
+State 3
+
+    8 conditional: IF • '(' comparison_expr ')' statement
+    9            | IF • '(' comparison_expr ')' statement ELSE statement
+
+    '('  shift, and go to state 15
+
+
+State 4
+
+   25 factor: '(' • expression ')'
+
+    NUMBER      shift, and go to state 1
+    IDENTIFIER  shift, and go to state 16
+    '('         shift, and go to state 4
+
+    array_access  go to state 17
+    expression    go to state 18
+    term          go to state 11
+    factor        go to state 12
+
+
+State 5
+
+    0 $accept: program • $end
+
+    $end  shift, and go to state 19
+
+
+State 6
+
+    1 program: statement • ';'
+
+    ';'  shift, and go to state 20
+
+
+State 7
+
+    3 statement: assignment •
+
+    $default  reduce using rule 3 (statement)
+
+
+State 8
+
+    6 assignment: array_access • '=' expression
+   24 factor: array_access •
+
+    '='  shift, and go to state 21
+
+    $default  reduce using rule 24 (factor)
+
+
+State 9
+
+    4 statement: conditional •
+
+    $default  reduce using rule 4 (statement)
+
+
+State 10
+
+    2 statement: expression • ';'
+   16 expression: expression • '+' term
+   17           | expression • '-' term
+
+    '+'  shift, and go to state 22
+    '-'  shift, and go to state 23
+    ';'  shift, and go to state 24
+
+
+State 11
+
+   18 expression: term •
+   19 term: term • '*' factor
+   20     | term • '/' factor
+
+    '*'  shift, and go to state 25
+    '/'  shift, and go to state 26
+
+    $default  reduce using rule 18 (expression)
+
+
+State 12
+
+   21 term: factor •
+
+    $default  reduce using rule 21 (term)
+
+
+State 13
+
+    5 assignment: IDENTIFIER '=' • expression
+
+    NUMBER      shift, and go to state 1
+    IDENTIFIER  shift, and go to state 16
+    '('         shift, and go to state 4
+
+    array_access  go to state 17
+    expression    go to state 27
+    term          go to state 11
+    factor        go to state 12
+
+
+State 14
+
+    7 array_access: IDENTIFIER '[' • expression ']'
+
+    NUMBER      shift, and go to state 1
+    IDENTIFIER  shift, and go to state 16
+    '('         shift, and go to state 4
+
+    array_access  go to state 17
+    expression    go to state 28
+    term          go to state 11
+    factor        go to state 12
+
+
+State 15
+
+    8 conditional: IF '(' • comparison_expr ')' statement
+    9            | IF '(' • comparison_expr ')' statement ELSE statement
+
+    NUMBER      shift, and go to state 1
+    IDENTIFIER  shift, and go to state 16
+    '('         shift, and go to state 4
+
+    array_access     go to state 17
+    comparison_expr  go to state 29
+    expression       go to state 30
+    term             go to state 11
+    factor           go to state 12
+
+
+State 16
+
+    7 array_access: IDENTIFIER • '[' expression ']'
+   23 factor: IDENTIFIER •
+
+    '['  shift, and go to state 14
+
+    $default  reduce using rule 23 (factor)
+
+
+State 17
+
+   24 factor: array_access •
+
+    $default  reduce using rule 24 (factor)
+
+
+State 18
+
+   16 expression: expression • '+' term
+   17           | expression • '-' term
+   25 factor: '(' expression • ')'
+
+    '+'  shift, and go to state 22
+    '-'  shift, and go to state 23
+    ')'  shift, and go to state 31
+
+
+State 19
+
+    0 $accept: program $end •
+
+    $default  accept
+
+
+State 20
+
+    1 program: statement ';' •
+
+    $default  reduce using rule 1 (program)
+
+
+State 21
+
+    6 assignment: array_access '=' • expression
+
+    NUMBER      shift, and go to state 1
+    IDENTIFIER  shift, and go to state 16
+    '('         shift, and go to state 4
+
+    array_access  go to state 17
+    expression    go to state 32
+    term          go to state 11
+    factor        go to state 12
+
+
+State 22
+
+   16 expression: expression '+' • term
+
+    NUMBER      shift, and go to state 1
+    IDENTIFIER  shift, and go to state 16
+    '('         shift, and go to state 4
+
+    array_access  go to state 17
+    term          go to state 33
+    factor        go to state 12
+
+
+State 23
+
+   17 expression: expression '-' • term
+
+    NUMBER      shift, and go to state 1
+    IDENTIFIER  shift, and go to state 16
+    '('         shift, and go to state 4
+
+    array_access  go to state 17
+    term          go to state 34
+    factor        go to state 12
+
+
+State 24
+
+    2 statement: expression ';' •
+
+    $default  reduce using rule 2 (statement)
+
+
+State 25
+
+   19 term: term '*' • factor
+
+    NUMBER      shift, and go to state 1
+    IDENTIFIER  shift, and go to state 16
+    '('         shift, and go to state 4
+
+    array_access  go to state 17
+    factor        go to state 35
+
+
+State 26
+
+   20 term: term '/' • factor
+
+    NUMBER      shift, and go to state 1
+    IDENTIFIER  shift, and go to state 16
+    '('         shift, and go to state 4
+
+    array_access  go to state 17
+    factor        go to state 36
+
+
+State 27
+
+    5 assignment: IDENTIFIER '=' expression •
+   16 expression: expression • '+' term
+   17           | expression • '-' term
+
+    '+'  shift, and go to state 22
+    '-'  shift, and go to state 23
+
+    $default  reduce using rule 5 (assignment)
+
+
+State 28
+
+    7 array_access: IDENTIFIER '[' expression • ']'
+   16 expression: expression • '+' term
+   17           | expression • '-' term
+
+    '+'  shift, and go to state 22
+    '-'  shift, and go to state 23
+    ']'  shift, and go to state 37
+
+
+State 29
+
+    8 conditional: IF '(' comparison_expr • ')' statement
+    9            | IF '(' comparison_expr • ')' statement ELSE statement
+
+    ')'  shift, and go to state 38
+
+
+State 30
+
+   10 comparison_expr: expression • '>' expression
+   11                | expression • '<' expression
+   12                | expression • GE expression
+   13                | expression • LE expression
+   14                | expression • EQ expression
+   15                | expression • NE expression
+   16 expression: expression • '+' term
+   17           | expression • '-' term
+
+    GE   shift, and go to state 39
+    LE   shift, and go to state 40
+    EQ   shift, and go to state 41
+    NE   shift, and go to state 42
+    '>'  shift, and go to state 43
+    '<'  shift, and go to state 44
+    '+'  shift, and go to state 22
+    '-'  shift, and go to state 23
+
+
+State 31
+
+   25 factor: '(' expression ')' •
+
+    $default  reduce using rule 25 (factor)
+
+
+State 32
+
+    6 assignment: array_access '=' expression •
+   16 expression: expression • '+' term
+   17           | expression • '-' term
+
+    '+'  shift, and go to state 22
+    '-'  shift, and go to state 23
+
+    $default  reduce using rule 6 (assignment)
+
+
+State 33
+
+   16 expression: expression '+' term •
+   19 term: term • '*' factor
+   20     | term • '/' factor
+
+    '*'  shift, and go to state 25
+    '/'  shift, and go to state 26
+
+    $default  reduce using rule 16 (expression)
+
+
+State 34
+
+   17 expression: expression '-' term •
+   19 term: term • '*' factor
+   20     | term • '/' factor
+
+    '*'  shift, and go to state 25
+    '/'  shift, and go to state 26
+
+    $default  reduce using rule 17 (expression)
+
+
+State 35
+
+   19 term: term '*' factor •
+
+    $default  reduce using rule 19 (term)
+
+
+State 36
+
+   20 term: term '/' factor •
+
+    $default  reduce using rule 20 (term)
+
+
+State 37
+
+    7 array_access: IDENTIFIER '[' expression ']' •
+
+    $default  reduce using rule 7 (array_access)
+
+
+State 38
+
+    8 conditional: IF '(' comparison_expr ')' • statement
+    9            | IF '(' comparison_expr ')' • statement ELSE statement
+
+    NUMBER      shift, and go to state 1
+    IDENTIFIER  shift, and go to state 2
+    IF          shift, and go to state 3
+    '('         shift, and go to state 4
+
+    statement     go to state 45
+    assignment    go to state 7
+    array_access  go to state 8
+    conditional   go to state 9
+    expression    go to state 10
+    term          go to state 11
+    factor        go to state 12
+
+
+State 39
+
+   12 comparison_expr: expression GE • expression
+
+    NUMBER      shift, and go to state 1
+    IDENTIFIER  shift, and go to state 16
+    '('         shift, and go to state 4
+
+    array_access  go to state 17
+    expression    go to state 46
+    term          go to state 11
+    factor        go to state 12
+
+
+State 40
+
+   13 comparison_expr: expression LE • expression
+
+    NUMBER      shift, and go to state 1
+    IDENTIFIER  shift, and go to state 16
+    '('         shift, and go to state 4
+
+    array_access  go to state 17
+    expression    go to state 47
+    term          go to state 11
+    factor        go to state 12
+
+
+State 41
+
+   14 comparison_expr: expression EQ • expression
+
+    NUMBER      shift, and go to state 1
+    IDENTIFIER  shift, and go to state 16
+    '('         shift, and go to state 4
+
+    array_access  go to state 17
+    expression    go to state 48
+    term          go to state 11
+    factor        go to state 12
+
+
+State 42
+
+   15 comparison_expr: expression NE • expression
+
+    NUMBER      shift, and go to state 1
+    IDENTIFIER  shift, and go to state 16
+    '('         shift, and go to state 4
+
+    array_access  go to state 17
+    expression    go to state 49
+    term          go to state 11
+    factor        go to state 12
+
+
+State 43
+
+   10 comparison_expr: expression '>' • expression
+
+    NUMBER      shift, and go to state 1
+    IDENTIFIER  shift, and go to state 16
+    '('         shift, and go to state 4
+
+    array_access  go to state 17
+    expression    go to state 50
+    term          go to state 11
+    factor        go to state 12
+
+
+State 44
+
+   11 comparison_expr: expression '<' • expression
+
+    NUMBER      shift, and go to state 1
+    IDENTIFIER  shift, and go to state 16
+    '('         shift, and go to state 4
+
+    array_access  go to state 17
+    expression    go to state 51
+    term          go to state 11
+    factor        go to state 12
+
+
+State 45
+
+    8 conditional: IF '(' comparison_expr ')' statement •
+    9            | IF '(' comparison_expr ')' statement • ELSE statement
+
+    ELSE  shift, and go to state 52
+
+    $default  reduce using rule 8 (conditional)
+
+
+State 46
+
+   12 comparison_expr: expression GE expression •
+   16 expression: expression • '+' term
+   17           | expression • '-' term
+
+    '+'  shift, and go to state 22
+    '-'  shift, and go to state 23
+
+    $default  reduce using rule 12 (comparison_expr)
+
+
+State 47
+
+   13 comparison_expr: expression LE expression •
+   16 expression: expression • '+' term
+   17           | expression • '-' term
+
+    '+'  shift, and go to state 22
+    '-'  shift, and go to state 23
+
+    $default  reduce using rule 13 (comparison_expr)
+
+
+State 48
+
+   14 comparison_expr: expression EQ expression •
+   16 expression: expression • '+' term
+   17           | expression • '-' term
+
+    '+'  shift, and go to state 22
+    '-'  shift, and go to state 23
+
+    $default  reduce using rule 14 (comparison_expr)
+
+
+State 49
+
+   15 comparison_expr: expression NE expression •
+   16 expression: expression • '+' term
+   17           | expression • '-' term
+
+    '+'  shift, and go to state 22
+    '-'  shift, and go to state 23
+
+    $default  reduce using rule 15 (comparison_expr)
+
+
+State 50
+
+   10 comparison_expr: expression '>' expression •
+   16 expression: expression • '+' term
+   17           | expression • '-' term
+
+    '+'  shift, and go to state 22
+    '-'  shift, and go to state 23
+
+    $default  reduce using rule 10 (comparison_expr)
+
+
+State 51
+
+   11 comparison_expr: expression '<' expression •
+   16 expression: expression • '+' term
+   17           | expression • '-' term
+
+    '+'  shift, and go to state 22
+    '-'  shift, and go to state 23
+
+    $default  reduce using rule 11 (comparison_expr)
+
+
+State 52
+
+    9 conditional: IF '(' comparison_expr ')' statement ELSE • statement
+
+    NUMBER      shift, and go to state 1
+    IDENTIFIER  shift, and go to state 2
+    IF          shift, and go to state 3
+    '('         shift, and go to state 4
+
+    statement     go to state 53
+    assignment    go to state 7
+    array_access  go to state 8
+    conditional   go to state 9
+    expression    go to state 10
+    term          go to state 11
+    factor        go to state 12
+
+
+State 53
+
+    9 conditional: IF '(' comparison_expr ')' statement ELSE statement •
+
+    $default  reduce using rule 9 (conditional)
